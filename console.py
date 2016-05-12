@@ -2,7 +2,7 @@ import db
 import pathlib
 
 def main():
-    print("Welcome to the TutorDB program.")
+    print("Welcome to the TeachRecord program.")
     
     dbpath = pathlib.Path(db.DB_DEFAULT_NAME)
     if (not dbpath.exists()):
@@ -23,7 +23,8 @@ Select one of the following options to continue:
         selection = int(input("Selection: "))
         if (selection == 1):
             session = new_session()
-            db_obj.insert_session(session)
+            if session is not None:
+                db_obj.insert_session(session)
         elif (selection == 2):
             print(db_obj.get_checkins())
         elif (selection == 3):
@@ -37,9 +38,22 @@ Select one of the following options to continue:
 def new_session():
     session = db.Session()
     session.start()
-    session.stop()
-    return session
-        
+    while True:
+        print("""
+Select one of the following options to continue:
+[1] Stop tutoring session and save
+[2] Stop tutoring session and do not save
+""")
+
+        selection = int(input("Selection: "))
+        if (selection == 1):
+            session.stop()
+            return session
+        elif (selection == 2):
+            return None
+        else:
+            pass
+                
 def new_user():
     user = db.User()
     user.set_cwid(input("User's campus-wide ID (CWID): "))
